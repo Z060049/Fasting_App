@@ -1,11 +1,49 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Svg, { Circle } from 'react-native-svg';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const FAST_DURATION_SECONDS = 16 * 60 * 60; // 16 hours in seconds
 
 const HomeScreen = () => {
+  const [isFasting, setIsFasting] = useState(false);
+  const [elapsed, setElapsed] = useState(0); // seconds
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Progress: 0 to 1
+  const progress = isFasting ? Math.min(elapsed / FAST_DURATION_SECONDS, 1) : 0;
+
+  // Timer effect
+  useEffect(() => {
+    if (isFasting) {
+      intervalRef.current = setInterval(() => {
+        setElapsed((prev) => {
+          if (prev < FAST_DURATION_SECONDS) {
+            return prev + 1;
+          } else {
+            clearInterval(intervalRef.current!);
+            return prev;
+          }
+        });
+      }, 1000);
+    } else {
+      setElapsed(0);
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    }
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [isFasting]);
+
+  // Format elapsed time as HH:MM:SS
+  const formatTime = (secs: number) => {
+    const h = Math.floor(secs / 3600).toString().padStart(2, '0');
+    const m = Math.floor((secs % 3600) / 60).toString().padStart(2, '0');
+    const s = (secs % 60).toString().padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* Header */}
@@ -36,18 +74,24 @@ const HomeScreen = () => {
                   strokeWidth={24}
                   fill="none"
                   strokeDasharray={848}
-                  strokeDashoffset={848 - 848 * 0.7}
+                  strokeDashoffset={848 - 848 * progress}
                   strokeLinecap="round"
                 />
               </Svg>
               <View style={styles.timerTextOverlay}>
-                <Text style={styles.timerLabelSmall}>UPCOMING FAST</Text>
+                <Text style={styles.timerLabelSmall}>
+                  {isFasting ? formatTime(elapsed) : 'UPCOMING FAST'}
+                </Text>
                 <Text style={styles.timerHours}>16 hours</Text>
               </View>
             </View>
           </View>
-          <TouchableOpacity style={styles.startFastingButton}>
-            <Text style={styles.startFastingText}>Start Fasting</Text>
+          <TouchableOpacity
+            style={styles.startFastingButton}
+            onPress={() => setIsFasting(true)}
+            disabled={isFasting}
+          >
+            <Text style={styles.startFastingText}>{isFasting ? 'Fasting...' : 'Start Fasting'}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -108,7 +152,7 @@ const styles = StyleSheet.create({
   },
   timerCircle: {
     alignItems: 'center',
-    marginBottom: 18,
+    marginBottom: 28,
   },
   circularProgressContainer: {
     justifyContent: 'center',
