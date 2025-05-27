@@ -1,20 +1,16 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Svg, { Circle } from 'react-native-svg';
+
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity>
-          <Icon name="timer-outline" size={28} color="#FF2D55" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Home</Text>
-        <TouchableOpacity>
-          <Icon name="dots-vertical" size={28} color="#222" />
-        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Track</Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
@@ -23,26 +19,24 @@ const HomeScreen = () => {
           <View style={styles.timerCircle}>
             {/* Circular Progress Bar */}
             <View style={styles.circularProgressContainer}>
-              <Svg width={220} height={220}>
-                {/* Background Circle */}
+              <Svg width={300} height={300}>
                 <Circle
-                  cx={110}
-                  cy={110}
-                  r={100}
+                  cx={150}
+                  cy={150}
+                  r={135}
                   stroke="#eee"
-                  strokeWidth={16}
-                  fill="none"
-                />
-                {/* Progress Circle */}
-                <Circle
-                  cx={110}
-                  cy={110}
-                  r={100}
-                  stroke="#FF2D55"
                   strokeWidth={20}
                   fill="none"
-                  strokeDasharray={628}
-                  strokeDashoffset={628 - 628 * 0.7} // 0.7 = 70% progress, adjust as needed
+                />
+                <Circle
+                  cx={150}
+                  cy={150}
+                  r={135}
+                  stroke="#FF2D55"
+                  strokeWidth={24}
+                  fill="none"
+                  strokeDasharray={848}
+                  strokeDashoffset={848 - 848 * 0.7}
                   strokeLinecap="round"
                 />
               </Svg>
@@ -55,57 +49,6 @@ const HomeScreen = () => {
           <TouchableOpacity style={styles.startFastingButton}>
             <Text style={styles.startFastingText}>Start Fasting</Text>
           </TouchableOpacity>
-        </View>
-
-        {/* Water Tracker Card */}
-        <View style={styles.card}>
-          <View style={styles.cardHeaderRow}>
-            <Text style={styles.cardTitle}>Water Tracker</Text>
-            <Icon name="chevron-right" size={22} color="#FF2D55" />
-          </View>
-          <View style={styles.waterRow}>
-            <View>
-              <Text style={styles.waterAmount}>300 <Text style={styles.waterUnit}>mL</Text></Text>
-              <Text style={styles.waterGoal}>/ 2500 mL</Text>
-              <Text style={styles.waterPercent}>8% completed</Text>
-            </View>
-            <View style={styles.waterControls}>
-              <TouchableOpacity style={styles.waterButton}>
-                <Icon name="minus" size={22} color="#2196F3" />
-              </TouchableOpacity>
-              <View style={styles.waterDropContainer}>
-                <Icon name="water" size={40} color="#2196F3" />
-              </View>
-              <TouchableOpacity style={styles.waterButton}>
-                <Icon name="plus" size={22} color="#2196F3" />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-
-        {/* Weight Tracker Card */}
-        <View style={styles.card}>
-          <View style={styles.cardHeaderRow}>
-            <Text style={styles.cardTitle}>Weight Tracker</Text>
-            <Icon name="chevron-right" size={22} color="#FF2D55" />
-          </View>
-          <View style={styles.weightRow}>
-            <Text style={styles.weightValue}>89.5 <Text style={styles.weightUnit}>kg</Text></Text>
-            <View style={styles.weightChangeRow}>
-              <Icon name="arrow-down" size={16} color="#00C853" />
-              <Text style={styles.weightChange}>- 2.5 kg</Text>
-            </View>
-            <TouchableOpacity style={styles.iconButton}>
-              <Icon name="content-copy" size={20} color="#BDBDBD" />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.weightBarBg}>
-            <View style={styles.weightBarFill} />
-          </View>
-          <View style={styles.weightLabelsRow}>
-            <Text style={styles.weightLabel}>Starting: 100.0 kg</Text>
-            <Text style={styles.weightLabel}>Goal: 76.0 kg</Text>
-          </View>
         </View>
       </ScrollView>
 
@@ -120,16 +63,8 @@ const HomeScreen = () => {
           <Text style={styles.navLabel}>Explore</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.navItem}>
-          <Icon name="file-chart-outline" size={26} color="#BDBDBD" />
-          <Text style={styles.navLabel}>Report</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="star-outline" size={26} color="#BDBDBD" />
-          <Text style={styles.navLabel}>Achievements</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
           <Icon name="account-circle-outline" size={26} color="#BDBDBD" />
-          <Text style={styles.navLabel}>Account</Text>
+          <Text style={styles.navLabel}>Me</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -144,8 +79,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    justifyContent: 'center',
     paddingTop: 10,
     paddingBottom: 10,
     backgroundColor: '#F7F7F7',
@@ -162,13 +96,15 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
     borderRadius: 18,
-    padding: 20,
+    height: SCREEN_HEIGHT * (2 / 3),
     marginBottom: 18,
     shadowColor: '#000',
     shadowOpacity: 0.04,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
     elevation: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   timerCircle: {
     alignItems: 'center',
@@ -177,15 +113,15 @@ const styles = StyleSheet.create({
   circularProgressContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 220,
-    height: 220,
+    width: 300,
+    height: 300,
   },
   timerTextOverlay: {
     position: 'absolute',
     top: 0,
     left: 0,
-    width: 220,
-    height: 220,
+    width: 300,
+    height: 300,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -241,6 +177,10 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     alignItems: 'center',
     marginTop: 8,
+    width: '90%',
+    alignSelf: 'center',
+    minWidth: undefined,
+    paddingHorizontal: 0,
   },
   startFastingText: {
     color: '#fff',
@@ -258,41 +198,29 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#222',
   },
-  waterRow: {
+  waterBoxRow: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  waterAmount: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#222',
-  },
-  waterUnit: {
-    fontSize: 16,
-    color: '#BDBDBD',
-  },
-  waterGoal: {
-    fontSize: 14,
-    color: '#BDBDBD',
-  },
-  waterPercent: {
-    fontSize: 13,
-    color: '#BDBDBD',
-    marginTop: 2,
-  },
-  waterControls: {
-    flexDirection: 'row',
     alignItems: 'center',
   },
-  waterButton: {
+  waterBox: {
+    flex: 1,
     backgroundColor: '#F7F7F7',
-    borderRadius: 20,
-    padding: 8,
-    marginHorizontal: 4,
+    borderRadius: 16,
+    marginHorizontal: 6,
+    paddingVertical: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
   },
-  waterDropContainer: {
-    marginHorizontal: 8,
+  waterBoxText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#222',
   },
   weightRow: {
     flexDirection: 'row',
