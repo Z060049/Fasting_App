@@ -44,11 +44,33 @@ const HomeScreen = () => {
     return `${h}:${m}:${s}`;
   };
 
+  const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+  const todayIdx = new Date().getDay();
+
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Track</Text>
+      </View>
+
+      {/* Weekly Fasting Tracker */}
+      <View style={styles.weekTracker}>
+        {daysOfWeek.map((day, idx) => (
+          <View key={day} style={styles.weekDayContainer}>
+            <Text style={[styles.weekDayLabel, idx === todayIdx && styles.weekDayLabelActive]}>{day}</Text>
+            <Svg width={32} height={32}>
+              <Circle
+                cx={16}
+                cy={16}
+                r={12.8}
+                stroke={idx === todayIdx ? '#FF2D55' : '#D8D3D5'}
+                strokeWidth={6}
+                fill="none"
+              />
+            </Svg>
+          </View>
+        ))}
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
@@ -76,6 +98,7 @@ const HomeScreen = () => {
                   strokeDasharray={848}
                   strokeDashoffset={848 - 848 * progress}
                   strokeLinecap="round"
+                  transform="rotate(-90 150 150)"
                 />
               </Svg>
               <View style={styles.timerTextOverlay}>
@@ -83,6 +106,9 @@ const HomeScreen = () => {
                   {isFasting ? formatTime(elapsed) : 'UPCOMING FAST'}
                 </Text>
                 <Text style={styles.timerHours}>16 hours</Text>
+                <TouchableOpacity style={styles.editGoalsButton}>
+                  <Text style={styles.editGoalsText}>EDIT GOALS</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
@@ -345,7 +371,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#222',
     textAlign: 'center',
-    transform: [{ scaleX: 0.8 }],
   },
   timerLabelSmall: {
     fontSize: 13,
@@ -354,6 +379,39 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     textAlign: 'center',
     marginBottom: 2,
+  },
+  editGoalsButton: {
+    marginTop: 8,
+    alignItems: 'center',
+  },
+  editGoalsText: {
+    color: '#FF2D55',
+    fontWeight: '700',
+    fontSize: 15,
+    letterSpacing: 1.1,
+    textTransform: 'uppercase',
+  },
+  weekTracker: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 18,
+    marginHorizontal: 8,
+    marginTop: 18,
+  },
+  weekDayContainer: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  weekDayLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#B3A7AE',
+    marginBottom: 2,
+    letterSpacing: 1.2,
+  },
+  weekDayLabelActive: {
+    color: '#222',
   },
 });
 
