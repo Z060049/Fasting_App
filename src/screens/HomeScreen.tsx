@@ -144,21 +144,97 @@ const HomeScreen = () => {
         animationType="slide"
         onRequestClose={() => setShowEditGoals(false)}
         presentationStyle="pageSheet"
+        transparent={true}
       >
-        <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Edit Goals</Text>
-          <TouchableOpacity
-            onPress={() => setShowEditGoals(false)}
-            style={{
-              marginTop: 20,
-              padding: 12,
-              backgroundColor: '#FF2D55',
-              borderRadius: 10,
-            }}
-          >
-            <Text style={{ color: '#fff', fontSize: 16 }}>Close</Text>
-          </TouchableOpacity>
-        </SafeAreaView>
+        <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.15)' }}>
+          <View style={{
+            backgroundColor: '#fff',
+            borderTopLeftRadius: 24,
+            borderTopRightRadius: 24,
+            paddingTop: 16,
+            paddingHorizontal: 20,
+            paddingBottom: 32,
+            minHeight: 480,
+          }}>
+            {/* Drag indicator */}
+            <View style={{ alignItems: 'center', marginBottom: 8 }}>
+              <View style={{ width: 40, height: 5, borderRadius: 3, backgroundColor: '#E0E0E0' }} />
+            </View>
+            {/* Close X */}
+            <TouchableOpacity onPress={() => setShowEditGoals(false)} style={{ position: 'absolute', top: 16, right: 16, zIndex: 2 }}>
+              <Icon name="close" size={28} color="#222" />
+            </TouchableOpacity>
+            {/* Title */}
+            <Text style={{ fontSize: 22, fontWeight: '700', textAlign: 'center', marginBottom: 18, color: '#222' }}>Change fast goal</Text>
+            {/* Grid of cards */}
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 24 }}>
+              {/* Card 1 */}
+              <View style={{ width: '30%', aspectRatio: 0.8, backgroundColor: '#6C2EB6', borderRadius: 16, marginBottom: 16, padding: 12, justifyContent: 'space-between' }}>
+                <Text style={{ color: '#fff', fontWeight: '600', fontSize: 14 }}>Circadian{"\n"}Rhythm TRF</Text>
+                <View>
+                  <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 22 }}>13</Text>
+                  <Text style={{ color: '#fff', fontSize: 14 }}>hours</Text>
+                </View>
+                <Icon name="information" size={18} color="#fff" style={{ alignSelf: 'flex-end' }} />
+              </View>
+              {/* Card 2 */}
+              <View style={{ width: '30%', aspectRatio: 0.8, backgroundColor: '#FF4FA0', borderRadius: 16, marginBottom: 16, padding: 12, justifyContent: 'space-between' }}>
+                <Text style={{ color: '#fff', fontWeight: '600', fontSize: 14 }}>16:8{"\n"}TRF</Text>
+                <View>
+                  <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 22 }}>16</Text>
+                  <Text style={{ color: '#fff', fontSize: 14 }}>hours</Text>
+                </View>
+                <Icon name="information" size={18} color="#fff" style={{ alignSelf: 'flex-end' }} />
+              </View>
+              {/* Card 3 */}
+              <View style={{ width: '30%', aspectRatio: 0.8, backgroundColor: '#0B6C3E', borderRadius: 16, marginBottom: 16, padding: 12, justifyContent: 'space-between' }}>
+                <Text style={{ color: '#fff', fontWeight: '600', fontSize: 14 }}>18:6{"\n"}TRF</Text>
+                <View>
+                  <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 22 }}>18</Text>
+                  <Text style={{ color: '#fff', fontSize: 14 }}>hours</Text>
+                </View>
+                <Icon name="information" size={18} color="#fff" style={{ alignSelf: 'flex-end' }} />
+              </View>
+              {/* Card 4 */}
+              <View style={{ width: '30%', aspectRatio: 0.8, backgroundColor: '#FFA726', borderRadius: 16, marginBottom: 16, padding: 12, justifyContent: 'space-between' }}>
+                <Text style={{ color: '#fff', fontWeight: '600', fontSize: 14 }}>20:4{"\n"}TRF</Text>
+                <View>
+                  <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 22 }}>20</Text>
+                  <Text style={{ color: '#fff', fontSize: 14 }}>hours</Text>
+                </View>
+                <Icon name="information" size={18} color="#fff" style={{ alignSelf: 'flex-end' }} />
+              </View>
+              {/* Card 5 */}
+              <View style={{ width: '30%', aspectRatio: 0.8, backgroundColor: '#2979FF', borderRadius: 16, marginBottom: 16, padding: 12, justifyContent: 'space-between' }}>
+                <Text style={{ color: '#fff', fontWeight: '600', fontSize: 14 }}>36-Hour{"\n"}Fast</Text>
+                <View>
+                  <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 22 }}>36</Text>
+                  <Text style={{ color: '#fff', fontSize: 14 }}>hours</Text>
+                </View>
+                <Icon name="information" size={18} color="#fff" style={{ alignSelf: 'flex-end' }} />
+              </View>
+              {/* Card 6 */}
+              <View style={{ width: '30%', aspectRatio: 0.8, backgroundColor: '#757575', borderRadius: 16, marginBottom: 16, padding: 12, justifyContent: 'space-between' }}>
+                <Text style={{ color: '#fff', fontWeight: '600', fontSize: 14 }}>Custom{"\n"}Fast</Text>
+                <View>
+                  <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 22 }}>1-168</Text>
+                  <Text style={{ color: '#fff', fontSize: 14 }}>hours</Text>
+                </View>
+                <Icon name="information" size={18} color="#fff" style={{ alignSelf: 'flex-end' }} />
+              </View>
+            </View>
+            {/* Your Presets */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+              <Text style={{ fontWeight: '700', fontSize: 17, color: '#222', marginRight: 8 }}>Your Presets</Text>
+              <View style={{ backgroundColor: '#FF2D55', borderRadius: 10, paddingHorizontal: 8, paddingVertical: 2 }}>
+                <Text style={{ color: '#fff', fontWeight: '700', fontSize: 13 }}>Zero+</Text>
+              </View>
+            </View>
+            <View style={{ width: 80, height: 80, backgroundColor: '#F0F0F0', borderRadius: 14, alignItems: 'center', justifyContent: 'center' }}>
+              <Icon name="plus" size={36} color="#888" />
+            </View>
+          </View>
+        </View>
       </Modal>
     </SafeAreaView>
   );
