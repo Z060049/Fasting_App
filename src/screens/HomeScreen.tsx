@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Dimensions, Modal } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Svg, { Circle } from 'react-native-svg';
 
@@ -10,6 +10,7 @@ const HomeScreen = () => {
   const [isFasting, setIsFasting] = useState(false);
   const [elapsed, setElapsed] = useState(0); // seconds
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [showEditGoals, setShowEditGoals] = useState(false);
 
   // Progress: 0 to 1
   const progress = isFasting ? Math.min(elapsed / FAST_DURATION_SECONDS, 1) : 0;
@@ -106,7 +107,7 @@ const HomeScreen = () => {
                   {isFasting ? formatTime(elapsed) : 'UPCOMING FAST'}
                 </Text>
                 <Text style={styles.timerHours}>16 hours</Text>
-                <TouchableOpacity style={styles.editGoalsButton}>
+                <TouchableOpacity style={styles.editGoalsButton} onPress={() => setShowEditGoals(true)}>
                   <Text style={styles.editGoalsText}>EDIT GOALS</Text>
                 </TouchableOpacity>
               </View>
@@ -137,6 +138,28 @@ const HomeScreen = () => {
           <Text style={styles.navLabel}>Me</Text>
         </TouchableOpacity>
       </View>
+      {/* Edit Goals Modal */}
+      <Modal
+        visible={showEditGoals}
+        animationType="slide"
+        onRequestClose={() => setShowEditGoals(false)}
+        presentationStyle="pageSheet"
+      >
+        <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Edit Goals</Text>
+          <TouchableOpacity
+            onPress={() => setShowEditGoals(false)}
+            style={{
+              marginTop: 20,
+              padding: 12,
+              backgroundColor: '#FF2D55',
+              borderRadius: 10,
+            }}
+          >
+            <Text style={{ color: '#fff', fontSize: 16 }}>Close</Text>
+          </TouchableOpacity>
+        </SafeAreaView>
+      </Modal>
     </SafeAreaView>
   );
 };
