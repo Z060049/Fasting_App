@@ -54,7 +54,7 @@ const HomeScreen = () => {
     <SafeAreaView style={styles.safeArea}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Track</Text>
+        <Text style={styles.headerTitle}>Fast Track</Text>
       </View>
 
       {/* Weekly Fasting Tracker */}
@@ -143,21 +143,6 @@ const HomeScreen = () => {
         </View>
       </ScrollView>
 
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="home" size={26} color="#FF2D55" />
-          <Text style={[styles.navLabel, { color: '#FF2D55' }]}>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="compass-outline" size={26} color="#BDBDBD" />
-          <Text style={styles.navLabel}>Explore</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="account-circle-outline" size={26} color="#BDBDBD" />
-          <Text style={styles.navLabel}>Me</Text>
-        </TouchableOpacity>
-      </View>
       {/* Edit Goals Modal */}
       <Modal
         visible={showEditGoals}
@@ -494,33 +479,6 @@ const styles = StyleSheet.create({
   weightLabel: {
     fontSize: 13,
     color: '#BDBDBD',
-  },
-  bottomNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    paddingHorizontal: 8,
-    paddingTop: 8,
-    paddingBottom: 16,
-    borderTopLeftRadius: 18,
-    borderTopRightRadius: 18,
-    shadowColor: '#000',
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: -2 },
-    elevation: 8,
-  },
-  navItem: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  navLabel: {
-    fontSize: 12,
-    color: '#BDBDBD',
-    marginTop: 2,
-    fontWeight: '600',
   },
   timerHours: {
     fontSize: 40,
