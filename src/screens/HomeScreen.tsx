@@ -4,23 +4,25 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Svg, { Circle } from 'react-native-svg';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
-const FAST_DURATION_SECONDS = 16 * 60 * 60; // 16 hours in seconds
 
 const HomeScreen = () => {
   const [isFasting, setIsFasting] = useState(false);
   const [elapsed, setElapsed] = useState(0); // seconds
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const [showEditGoals, setShowEditGoals] = useState(false);
+  const [fastDuration, setFastDuration] = useState(16 * 60 * 60); // default 16 hours
+  // Track completed fasts for each day of the week (Sunday=0 ... Saturday=6)
+  const [completedFasts, setCompletedFasts] = useState<boolean[]>(Array(7).fill(false));
 
   // Progress: 0 to 1
-  const progress = isFasting ? Math.min(elapsed / FAST_DURATION_SECONDS, 1) : 0;
+  const progress = isFasting ? Math.min(elapsed / fastDuration, 1) : 0;
 
   // Timer effect
   useEffect(() => {
     if (isFasting) {
       intervalRef.current = setInterval(() => {
         setElapsed((prev) => {
-          if (prev < FAST_DURATION_SECONDS) {
+          if (prev < fastDuration) {
             return prev + 1;
           } else {
             clearInterval(intervalRef.current!);
@@ -35,7 +37,7 @@ const HomeScreen = () => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [isFasting]);
+  }, [isFasting, fastDuration]);
 
   // Format elapsed time as HH:MM:SS
   const formatTime = (secs: number) => {
@@ -67,7 +69,7 @@ const HomeScreen = () => {
                 r={12.8}
                 stroke={idx === todayIdx ? '#FF2D55' : '#D8D3D5'}
                 strokeWidth={6}
-                fill="none"
+                fill={completedFasts[idx] ? '#FF2D55' : 'none'}
               />
             </Svg>
           </View>
@@ -106,7 +108,11 @@ const HomeScreen = () => {
                 <Text style={styles.timerLabelSmall}>
                   {isFasting ? formatTime(elapsed) : 'UPCOMING FAST'}
                 </Text>
-                <Text style={styles.timerHours}>16 hours</Text>
+                <Text style={styles.timerHours}>
+                  {fastDuration >= 3600
+                    ? `${(fastDuration / 3600).toFixed(0)} hours`
+                    : `${(fastDuration / 60).toFixed(0)} min`}
+                </Text>
                 <TouchableOpacity style={styles.editGoalsButton} onPress={() => setShowEditGoals(true)}>
                   <Text style={styles.editGoalsText}>EDIT GOALS</Text>
                 </TouchableOpacity>
@@ -114,11 +120,25 @@ const HomeScreen = () => {
             </View>
           </View>
           <TouchableOpacity
-            style={styles.startFastingButton}
-            onPress={() => setIsFasting(true)}
-            disabled={isFasting}
+            style={[
+              styles.startFastingButton,
+              { backgroundColor: isFasting ? '#BDBDBD' : '#FF2D55' },
+            ]}
+            onPress={() => {
+              if (isFasting) {
+                const today = new Date().getDay();
+                setCompletedFasts(prev => {
+                  const updated = [...prev];
+                  updated[today] = true;
+                  return updated;
+                });
+              }
+              setIsFasting(!isFasting);
+            }}
           >
-            <Text style={styles.startFastingText}>{isFasting ? 'Fasting...' : 'Start Fasting'}</Text>
+            <Text style={styles.startFastingText}>
+              {isFasting ? 'End Fasting' : 'Start Fasting'}
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -169,65 +189,102 @@ const HomeScreen = () => {
             {/* Grid of cards */}
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 24 }}>
               {/* Card 1 */}
-              <View style={{ width: '30%', aspectRatio: 0.8, backgroundColor: '#6C2EB6', borderRadius: 16, marginBottom: 16, padding: 12, justifyContent: 'space-between' }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setFastDuration(13 * 60 * 60);
+                  setShowEditGoals(false);
+                }}
+                style={{ width: '30%', aspectRatio: 0.8, backgroundColor: '#6C2EB6', borderRadius: 16, marginBottom: 16, padding: 12, justifyContent: 'space-between' }}
+              >
                 <Text style={{ color: '#fff', fontWeight: '600', fontSize: 14 }}>Circadian{"\n"}Rhythm TRF</Text>
                 <View>
                   <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 22 }}>13</Text>
                   <Text style={{ color: '#fff', fontSize: 14 }}>hours</Text>
                 </View>
                 <Icon name="information" size={18} color="#fff" style={{ alignSelf: 'flex-end' }} />
-              </View>
+              </TouchableOpacity>
               {/* Card 2 */}
-              <View style={{ width: '30%', aspectRatio: 0.8, backgroundColor: '#FF4FA0', borderRadius: 16, marginBottom: 16, padding: 12, justifyContent: 'space-between' }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setFastDuration(16 * 60 * 60);
+                  setShowEditGoals(false);
+                }}
+                style={{ width: '30%', aspectRatio: 0.8, backgroundColor: '#FF4FA0', borderRadius: 16, marginBottom: 16, padding: 12, justifyContent: 'space-between' }}
+              >
                 <Text style={{ color: '#fff', fontWeight: '600', fontSize: 14 }}>16:8{"\n"}TRF</Text>
                 <View>
                   <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 22 }}>16</Text>
                   <Text style={{ color: '#fff', fontSize: 14 }}>hours</Text>
                 </View>
                 <Icon name="information" size={18} color="#fff" style={{ alignSelf: 'flex-end' }} />
-              </View>
+              </TouchableOpacity>
               {/* Card 3 */}
-              <View style={{ width: '30%', aspectRatio: 0.8, backgroundColor: '#0B6C3E', borderRadius: 16, marginBottom: 16, padding: 12, justifyContent: 'space-between' }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setFastDuration(18 * 60 * 60);
+                  setShowEditGoals(false);
+                }}
+                style={{ width: '30%', aspectRatio: 0.8, backgroundColor: '#0B6C3E', borderRadius: 16, marginBottom: 16, padding: 12, justifyContent: 'space-between' }}
+              >
                 <Text style={{ color: '#fff', fontWeight: '600', fontSize: 14 }}>18:6{"\n"}TRF</Text>
                 <View>
                   <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 22 }}>18</Text>
                   <Text style={{ color: '#fff', fontSize: 14 }}>hours</Text>
                 </View>
                 <Icon name="information" size={18} color="#fff" style={{ alignSelf: 'flex-end' }} />
-              </View>
+              </TouchableOpacity>
               {/* Card 4 */}
-              <View style={{ width: '30%', aspectRatio: 0.8, backgroundColor: '#FFA726', borderRadius: 16, marginBottom: 16, padding: 12, justifyContent: 'space-between' }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setFastDuration(20 * 60 * 60);
+                  setShowEditGoals(false);
+                }}
+                style={{ width: '30%', aspectRatio: 0.8, backgroundColor: '#FFA726', borderRadius: 16, marginBottom: 16, padding: 12, justifyContent: 'space-between' }}
+              >
                 <Text style={{ color: '#fff', fontWeight: '600', fontSize: 14 }}>20:4{"\n"}TRF</Text>
                 <View>
                   <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 22 }}>20</Text>
                   <Text style={{ color: '#fff', fontSize: 14 }}>hours</Text>
                 </View>
                 <Icon name="information" size={18} color="#fff" style={{ alignSelf: 'flex-end' }} />
-              </View>
+              </TouchableOpacity>
               {/* Card 5 */}
-              <View style={{ width: '30%', aspectRatio: 0.8, backgroundColor: '#2979FF', borderRadius: 16, marginBottom: 16, padding: 12, justifyContent: 'space-between' }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setFastDuration(36 * 60 * 60);
+                  setShowEditGoals(false);
+                }}
+                style={{ width: '30%', aspectRatio: 0.8, backgroundColor: '#2979FF', borderRadius: 16, marginBottom: 16, padding: 12, justifyContent: 'space-between' }}
+              >
                 <Text style={{ color: '#fff', fontWeight: '600', fontSize: 14 }}>36-Hour{"\n"}Fast</Text>
                 <View>
                   <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 22 }}>36</Text>
                   <Text style={{ color: '#fff', fontSize: 14 }}>hours</Text>
                 </View>
                 <Icon name="information" size={18} color="#fff" style={{ alignSelf: 'flex-end' }} />
-              </View>
+              </TouchableOpacity>
               {/* Card 6 */}
-              <View style={{ width: '30%', aspectRatio: 0.8, backgroundColor: '#757575', borderRadius: 16, marginBottom: 16, padding: 12, justifyContent: 'space-between' }}>
+              <TouchableOpacity
+                onPress={() => {
+                  // This is just a placeholder for custom fast logic.
+                  setFastDuration(5 * 60);
+                  setShowEditGoals(false);
+                }}
+                style={{ width: '30%', aspectRatio: 0.8, backgroundColor: '#757575', borderRadius: 16, marginBottom: 16, padding: 12, justifyContent: 'space-between' }}
+              >
                 <Text style={{ color: '#fff', fontWeight: '600', fontSize: 14 }}>Custom{"\n"}Fast</Text>
                 <View>
-                  <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 22 }}>1-168</Text>
-                  <Text style={{ color: '#fff', fontSize: 14 }}>hours</Text>
+                  <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 22 }}>5min</Text>
+                  <Text style={{ color: '#fff', fontSize: 14 }}>minutes</Text>
                 </View>
                 <Icon name="information" size={18} color="#fff" style={{ alignSelf: 'flex-end' }} />
-              </View>
+              </TouchableOpacity>
             </View>
             {/* Your Presets */}
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
               <Text style={{ fontWeight: '700', fontSize: 17, color: '#222', marginRight: 8 }}>Your Presets</Text>
               <View style={{ backgroundColor: '#FF2D55', borderRadius: 10, paddingHorizontal: 8, paddingVertical: 2 }}>
-                <Text style={{ color: '#fff', fontWeight: '700', fontSize: 13 }}>Zero+</Text>
+                <Text style={{ color: '#fff', fontWeight: '700', fontSize: 13 }}>Premium</Text>
               </View>
             </View>
             <View style={{ width: 80, height: 80, backgroundColor: '#F0F0F0', borderRadius: 14, alignItems: 'center', justifyContent: 'center' }}>
